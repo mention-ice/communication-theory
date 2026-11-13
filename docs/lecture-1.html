@@ -1,0 +1,185 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Lecture 1: Channels and optimal decoding · Communication Theory</title>
+<meta name="description" content="Lecture 1 of Communication Theory: notes, quiz, exercises.">
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&amp;family=Space+Mono:ital,wght@0,400;0,700;1,400&amp;family=Bricolage+Grotesque:opsz,wght@12..96,700&amp;display=swap">
+<link rel="stylesheet" href="assets/style.css">
+<script>window.MathJax = {"tex": {"inlineMath": [["\\(", "\\)"]], "displayMath": [["\\[", "\\]"]], "macros": {"xv": "\\mathbf{x}", "yv": "\\mathbf{y}", "cv": "\\mathbf{c}", "Lv": "\\mathbf{L}", "Ccal": "\\mathcal{C}", "Xcal": "\\mathcal{X}", "Ycal": "\\mathcal{Y}"}}, "svg": {"fontCache": "global"}, "options": {"skipHtmlTags": ["script", "noscript", "style", "textarea", "pre", "code"]}};</script>
+<script defer id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-svg.js"></script>
+<script defer src="assets/site.js"></script>
+</head>
+<body>
+<canvas id="bitfield" aria-hidden="true"></canvas>
+<div class="page page-lecture">
+<div class="logo-bar" data-quiet><div class="wrap"><a class="ice-lockup" href="https://mention-ice.github.io/" aria-label="Mention Information &amp; Communication Engineering"><svg xmlns="http://www.w3.org/2000/svg" viewBox="226 116 444 230" aria-hidden="true"><circle cx="253.5" cy="142.5" r="22.5" fill="#86144F"/><path d="M253.5 207V315" stroke="#1C1722" stroke-width="42" stroke-linecap="round"/><path d="M487.1 161.2A92 92 0 1 0 487.1 302.2" fill="none" stroke="#86144F" stroke-width="36" stroke-linecap="round"/><path d="M454.2 198.2A42.5 42.5 0 1 0 454.2 265.2" fill="none" stroke="#706A7F" stroke-width="19" stroke-linecap="round"/><circle cx="428" cy="231.7" r="11" fill="#1C1722"/><path d="M573.3 146H645.7M573.3 317.5H645.7" stroke="#1C1722" stroke-width="38.5" stroke-linecap="round"/><path d="M573.3 232H608.7" stroke="#706A7F" stroke-width="38.5" stroke-linecap="round"/></svg><span>Information &amp;<br>Communication Engineering</span></a><a href="https://www.centralesupelec.fr/"><img class="cs-logo" src="assets/centralesupelec.png" alt="CentraleSupélec" width="390" height="200"></a></div></div>
+
+<header class="lec-hero">
+  <div class="wrap">
+    <nav class="crumbs" aria-label="Breadcrumb"><a href="index.html">&larr; Communication Theory</a></nav>
+    <div class="lecture-box">
+      <div class="lb-top"><span>Communication Theory</span><span>2026–2027</span></div>
+      <h1><span class="lb-n">Lecture 1:</span> Channels and optimal decoding</h1>
+      <div class="lb-bottom"><span class="lb-lect">Lecturer: <a href="https://l2s.centralesupelec.fr/u/yang-sheng/">Sheng Yang</a></span><span>Channel coding</span></div>
+    </div>
+    <div class="huff" data-quiet>
+  <p class="huff-bits" aria-hidden="true"><span class="cw cw0" title="C &rarr; 11000">11000</span><span class="cw cw1" title="h &rarr; 11011">11011</span><span class="cw cw0" title="a &rarr; 001">001</span><span class="cw cw1" title="n &rarr; 011">011</span><span class="cw cw0" title="n &rarr; 011">011</span><span class="cw cw1" title="e &rarr; 1000">1000</span><span class="cw cw0" title="l &rarr; 1010">1010</span><span class="cw cw1" title="s &rarr; 11110">11110</span><span class="cw cw0" title="space &rarr; 000">000</span><span class="cw cw1" title="a &rarr; 001">001</span><span class="cw cw0" title="n &rarr; 011">011</span><span class="cw cw1" title="d &rarr; 010">010</span><span class="cw cw0" title="space &rarr; 000">000</span><span class="cw cw1" title="o &rarr; 1011">1011</span><span class="cw cw0" title="p &rarr; 11101">11101</span><span class="cw cw1" title="t &rarr; 11111">11111</span><span class="cw cw0" title="i &rarr; 1001">1001</span><span class="cw cw1" title="m &rarr; 11100">11100</span><span class="cw cw0" title="a &rarr; 001">001</span><span class="cw cw1" title="l &rarr; 1010">1010</span><span class="cw cw0" title="space &rarr; 000">000</span><span class="cw cw1" title="d &rarr; 010">010</span><span class="cw cw0" title="e &rarr; 1000">1000</span><span class="cw cw1" title="c &rarr; 11001">11001</span><span class="cw cw0" title="o &rarr; 1011">1011</span><span class="cw cw1" title="d &rarr; 010">010</span><span class="cw cw0" title="i &rarr; 1001">1001</span><span class="cw cw1" title="n &rarr; 011">011</span><span class="cw cw0" title="g &rarr; 11010">11010</span></p>
+  <p class="huff-cap">The title above, Huffman-coded from its own letter frequencies: 111 bits, 3.83 bits per character (entropy 3.81). Alternate shading separates the codewords.</p>
+</div>
+    <nav class="jump" aria-label="On this page" data-quiet><a href="#notes">Notes</a><a href="#quiz">Quiz <span class="count">12</span></a><a href="#exercises">Exercises <span class="count">5</span></a></nav>
+  </div>
+</header>
+<div class="sheet-wrap wrap"><main class="sheet">
+<section class="block" id="notes" aria-labelledby="notes-h">
+  <div class="block-head"><h2 id="notes-h">Lecture notes</h2></div>
+  <div class="summary cn-summary"><h3 class="minor">Summary</h3><ul class="tex-list"><li>With equally likely codewords, the best decoder is maximum likelihood (ML): \(\hat{\xv} = \arg\max_{\xv\in\Ccal} P(\yv\mid\xv)\). On a memoryless channel it needs, for each channel use, the likelihood function \(a\mapsto P(y_i\mid a)\) up to a factor.</li><li>Binary input: one number per bit, the log-likelihood ratio \(L = \ln\frac{P(y\mid 0)}{P(y\mid 1)}\). BSC: \(L = \pm\ln\frac{1-p}{p}\). BEC: \(L\in\{+\infty, 0, -\infty\}\). Soft output: any real \(L\).</li><li>ML \(= \arg\max_{\cv\in\Ccal}\sum_i x_iL_i\) with \(x_i = 1-2c_i\): minimum Hamming distance on the BSC, consistency on the BEC, nearest antipodal codeword to \(\Lv\) on a soft-output channel.</li><li>The minimum distance \(d\) guarantees \(\lfloor (d-1)/2\rfloor\) errors on the BSC and \(d-1\) erasures on the BEC.</li></ul></div>
+  <div class="files"><a class="file-btn" href="files/lecture-1-notes.pdf"><span class="file-kind">PDF</span><span class="file-name">Lecture notes</span><span class="file-size">237 KB</span></a><a class="file-btn" href="files/course-presentation.pdf"><span class="file-kind">PDF</span><span class="file-name">Course presentation (slides)</span><span class="file-size">2190 KB</span></a></div>
+  <h3 class="minor">Contents</h3><ol class="outline"><li class="o-l1"><span class="o-num">1.1</span> The setting: channel, code, decoder</li><li class="o-l1"><span class="o-num">1.2</span> Binary input: one number per bit</li><li class="o-l1"><span class="o-num">1.3</span> Three binary channels</li><li class="o-l1"><span class="o-num">1.4</span> Maximum-likelihood decoding with LLRs</li><li class="o-l1"><span class="o-num">1.5</span> A first code: repetition</li><li class="o-l1"><span class="o-num">1.6</span> What a code guarantees: the minimum distance</li></ol>
+</section>
+<section class="block" id="quiz" aria-labelledby="quiz-h">
+  <div class="block-head"><h2 id="quiz-h">Quiz</h2><p class="block-sub">12 questions &middot; one correct answer each</p></div>
+  <p class="hint">Pick an answer to check it. Your answers are kept in this browser only.</p>
+  <noscript><p class="hint">Turn on JavaScript to check your answers.</p></noscript>
+  <div class="scoreboard" data-board>
+    <div class="score-bits" data-score-bits></div>
+    <p class="score-text" data-score-text>0 of 12 answered</p>
+    <button type="button" class="btn-quiet" data-reset>Start again</button>
+  </div>
+  <ol class="quiz" data-quiz="lecture-1">
+<li class="q" id="q1" data-key="a1659198" data-check="a9a00a71">
+  <div class="q-num" aria-hidden="true">Q1</div>
+  <div class="q-body">
+    <div class="q-stem"><p>A code has \(M = 4\) codewords of length \(n = 5\). What is its rate?</p></div>
+    <div class="q-opts" role="group" aria-label="Answers to question 1"><button type="button" class="opt" data-letter="A"><span class="opt-letter">A</span><span class="opt-text">\(4/5\)</span></button><button type="button" class="opt" data-letter="B"><span class="opt-letter">B</span><span class="opt-text">\(2/5\)</span></button><button type="button" class="opt" data-letter="C"><span class="opt-letter">C</span><span class="opt-text">\(1/5\)</span></button><button type="button" class="opt" data-letter="D"><span class="opt-letter">D</span><span class="opt-text">\(5/4\)</span></button></div>
+    <p class="q-feedback" aria-live="polite"></p>
+  </div>
+</li>
+<li class="q" id="q2" data-key="f0c715ce" data-check="c24e3254">
+  <div class="q-num" aria-hidden="true">Q2</div>
+  <div class="q-body">
+    <div class="q-stem"><p>The ML decoder \(\arg\max_{\xv\in\Ccal}P(\yv\mid\xv)\) minimises the error probability when…</p></div>
+    <div class="q-opts" role="group" aria-label="Answers to question 2"><button type="button" class="opt" data-letter="A"><span class="opt-letter">A</span><span class="opt-text">the channel is memoryless</span></button><button type="button" class="opt" data-letter="B"><span class="opt-letter">B</span><span class="opt-text">the code is linear</span></button><button type="button" class="opt" data-letter="C"><span class="opt-letter">C</span><span class="opt-text">the codewords are equally likely</span></button><button type="button" class="opt" data-letter="D"><span class="opt-letter">D</span><span class="opt-text">the channel is symmetric</span></button></div>
+    <p class="q-feedback" aria-live="polite"></p>
+  </div>
+</li>
+<li class="q" id="q3" data-key="30a53046" data-check="bb3fc6f0">
+  <div class="q-num" aria-hidden="true">Q3</div>
+  <div class="q-body">
+    <div class="q-stem"><p>On the BSC with \(p = 0.1\), what is the LLR of a received \(0\)?</p></div>
+    <div class="q-opts" role="group" aria-label="Answers to question 3"><button type="button" class="opt" data-letter="A"><span class="opt-letter">A</span><span class="opt-text">\(+\ln 9 \approx +2.2\)</span></button><button type="button" class="opt" data-letter="B"><span class="opt-letter">B</span><span class="opt-text">\(-\ln 9 \approx -2.2\)</span></button><button type="button" class="opt" data-letter="C"><span class="opt-letter">C</span><span class="opt-text">\(\ln 0.1 \approx -2.3\)</span></button><button type="button" class="opt" data-letter="D"><span class="opt-letter">D</span><span class="opt-text">\(+\infty\)</span></button></div>
+    <p class="q-feedback" aria-live="polite"></p>
+  </div>
+</li>
+<li class="q" id="q4" data-key="eda91a74" data-check="423effdd">
+  <div class="q-num" aria-hidden="true">Q4</div>
+  <div class="q-body">
+    <div class="q-stem"><p>On the BEC, what is the LLR of an erased bit \(y = {?}\)</p></div>
+    <div class="q-opts" role="group" aria-label="Answers to question 4"><button type="button" class="opt" data-letter="A"><span class="opt-letter">A</span><span class="opt-text">\(+\infty\)</span></button><button type="button" class="opt" data-letter="B"><span class="opt-letter">B</span><span class="opt-text">\(-\infty\)</span></button><button type="button" class="opt" data-letter="C"><span class="opt-letter">C</span><span class="opt-text">\(\ln\varepsilon\)</span></button><button type="button" class="opt" data-letter="D"><span class="opt-letter">D</span><span class="opt-text">\(0\)</span></button></div>
+    <p class="q-feedback" aria-live="polite"></p>
+  </div>
+</li>
+<li class="q" id="q5" data-key="0e2be14c" data-check="848bc809">
+  <div class="q-num" aria-hidden="true">Q5</div>
+  <div class="q-body">
+    <div class="q-stem"><p>A bit is uniform and its LLR is \(L = 3\). What is \(P(c = 0\mid y)\), approximately?</p></div>
+    <div class="q-opts" role="group" aria-label="Answers to question 5"><button type="button" class="opt" data-letter="A"><span class="opt-letter">A</span><span class="opt-text">\(0.73\)</span></button><button type="button" class="opt" data-letter="B"><span class="opt-letter">B</span><span class="opt-text">\(0.95\)</span></button><button type="button" class="opt" data-letter="C"><span class="opt-letter">C</span><span class="opt-text">\(0.75\)</span></button><button type="button" class="opt" data-letter="D"><span class="opt-letter">D</span><span class="opt-text">\(1\)</span></button></div>
+    <p class="q-feedback" aria-live="polite"></p>
+  </div>
+</li>
+<li class="q" id="q6" data-key="dae4d988" data-check="f011960d">
+  <div class="q-num" aria-hidden="true">Q6</div>
+  <div class="q-body">
+    <div class="q-stem"><p>With \(x_i = 1 - 2c_i\), the ML decoder of a binary code on a memoryless channel picks the codeword that…</p></div>
+    <div class="q-opts" role="group" aria-label="Answers to question 6"><button type="button" class="opt" data-letter="A"><span class="opt-letter">A</span><span class="opt-text">maximises \(\sum_i x_iL_i\)</span></button><button type="button" class="opt" data-letter="B"><span class="opt-letter">B</span><span class="opt-text">minimises \(\sum_i x_iL_i\)</span></button><button type="button" class="opt" data-letter="C"><span class="opt-letter">C</span><span class="opt-text">maximises \(\sum_i |L_i|\)</span></button><button type="button" class="opt" data-letter="D"><span class="opt-letter">D</span><span class="opt-text">maximises \(\sum_i c_iL_i\)</span></button></div>
+    <p class="q-feedback" aria-live="polite"></p>
+  </div>
+</li>
+<li class="q" id="q7" data-key="a49f5775" data-check="33f8215d">
+  <div class="q-num" aria-hidden="true">Q7</div>
+  <div class="q-body">
+    <div class="q-stem"><p>On the BSC with \(p < \tfrac12\), ML decoding is…</p></div>
+    <div class="q-opts" role="group" aria-label="Answers to question 7"><button type="button" class="opt" data-letter="A"><span class="opt-letter">A</span><span class="opt-text">keeping the codewords consistent with the unerased bits</span></button><button type="button" class="opt" data-letter="B"><span class="opt-letter">B</span><span class="opt-text">minimum Euclidean distance to the LLRs</span></button><button type="button" class="opt" data-letter="C"><span class="opt-letter">C</span><span class="opt-text">maximum Hamming distance decoding</span></button><button type="button" class="opt" data-letter="D"><span class="opt-letter">D</span><span class="opt-text">minimum Hamming distance decoding</span></button></div>
+    <p class="q-feedback" aria-live="polite"></p>
+  </div>
+</li>
+<li class="q" id="q8" data-key="1ebf9162" data-check="5bff2674">
+  <div class="q-num" aria-hidden="true">Q8</div>
+  <div class="q-body">
+    <div class="q-stem"><p>A receiver keeps only the sign of each LLR. Seen from the decoder, the channel becomes…</p></div>
+    <div class="q-opts" role="group" aria-label="Answers to question 8"><button type="button" class="opt" data-letter="A"><span class="opt-letter">A</span><span class="opt-text">a binary symmetric channel</span></button><button type="button" class="opt" data-letter="B"><span class="opt-letter">B</span><span class="opt-text">a binary erasure channel</span></button><button type="button" class="opt" data-letter="C"><span class="opt-letter">C</span><span class="opt-text">a soft-output channel</span></button><button type="button" class="opt" data-letter="D"><span class="opt-letter">D</span><span class="opt-text">a noiseless channel</span></button></div>
+    <p class="q-feedback" aria-live="polite"></p>
+  </div>
+</li>
+<li class="q" id="q9" data-key="cee26285" data-check="31bf6232">
+  <div class="q-num" aria-hidden="true">Q9</div>
+  <div class="q-body">
+    <div class="q-stem"><p>The \((3,1)\) repetition code is used on the BSC\((0.1)\) with ML decoding. Its error probability is about…</p></div>
+    <div class="q-opts" role="group" aria-label="Answers to question 9"><button type="button" class="opt" data-letter="A"><span class="opt-letter">A</span><span class="opt-text">\(0.001\)</span></button><button type="button" class="opt" data-letter="B"><span class="opt-letter">B</span><span class="opt-text">\(0.01\)</span></button><button type="button" class="opt" data-letter="C"><span class="opt-letter">C</span><span class="opt-text">\(0.028\)</span></button><button type="button" class="opt" data-letter="D"><span class="opt-letter">D</span><span class="opt-text">\(0.1\)</span></button></div>
+    <p class="q-feedback" aria-live="polite"></p>
+  </div>
+</li>
+<li class="q" id="q10" data-key="095f6e0c" data-check="5c6fe3b9">
+  <div class="q-num" aria-hidden="true">Q10</div>
+  <div class="q-body">
+    <div class="q-stem"><p>A code has minimum distance \(d = 5\). How many errors on the BSC does minimum distance decoding always correct?</p></div>
+    <div class="q-opts" role="group" aria-label="Answers to question 10"><button type="button" class="opt" data-letter="A"><span class="opt-letter">A</span><span class="opt-text">\(1\)</span></button><button type="button" class="opt" data-letter="B"><span class="opt-letter">B</span><span class="opt-text">\(2\)</span></button><button type="button" class="opt" data-letter="C"><span class="opt-letter">C</span><span class="opt-text">\(4\)</span></button><button type="button" class="opt" data-letter="D"><span class="opt-letter">D</span><span class="opt-text">\(5\)</span></button></div>
+    <p class="q-feedback" aria-live="polite"></p>
+  </div>
+</li>
+<li class="q" id="q11" data-key="1ba493b4" data-check="7c1cf4ca">
+  <div class="q-num" aria-hidden="true">Q11</div>
+  <div class="q-body">
+    <div class="q-stem"><p>The same code, \(d = 5\), on the BEC. How many erasures does ML decoding always correct?</p></div>
+    <div class="q-opts" role="group" aria-label="Answers to question 11"><button type="button" class="opt" data-letter="A"><span class="opt-letter">A</span><span class="opt-text">\(2\)</span></button><button type="button" class="opt" data-letter="B"><span class="opt-letter">B</span><span class="opt-text">\(3\)</span></button><button type="button" class="opt" data-letter="C"><span class="opt-letter">C</span><span class="opt-text">\(4\)</span></button><button type="button" class="opt" data-letter="D"><span class="opt-letter">D</span><span class="opt-text">\(5\)</span></button></div>
+    <p class="q-feedback" aria-live="polite"></p>
+  </div>
+</li>
+<li class="q" id="q12" data-key="26de9580" data-check="f32cf404">
+  <div class="q-num" aria-hidden="true">Q12</div>
+  <div class="q-body">
+    <div class="q-stem"><p>The \((3,1)\) repetition code, and the receiver computes \(\Lv = (+3, -1, -1)\). What does ML decide?</p></div>
+    <div class="q-opts" role="group" aria-label="Answers to question 12"><button type="button" class="opt" data-letter="A"><span class="opt-letter">A</span><span class="opt-text">\(1\), by majority</span></button><button type="button" class="opt" data-letter="B"><span class="opt-letter">B</span><span class="opt-text">\(0\), since \(\sum_i L_i = +1 > 0\)</span></button><button type="button" class="opt" data-letter="C"><span class="opt-letter">C</span><span class="opt-text">it has to guess</span></button><button type="button" class="opt" data-letter="D"><span class="opt-letter">D</span><span class="opt-text">\(1\), since two LLRs are negative</span></button></div>
+    <p class="q-feedback" aria-live="polite"></p>
+  </div>
+</li>
+  </ol>
+</section>
+<section class="block" id="exercises" aria-labelledby="exo-h">
+  <div class="block-head"><h2 id="exo-h">Exercises</h2><p class="block-sub">5 problems</p></div>
+  <ol class="problems">
+<li class="problem" id="p1">
+  <h3 class="p-head"><span class="p-num">Problem 1</span> <span class="p-title">An asymmetric channel</span></h3>
+  <div class="p-body"><p>A binary-input channel has output \(y\in\{0,1\}\) with \(P(y=1\mid c=0) = 0\) and \(P(y=0\mid c=1) = q\), where \(0<q<1\): a \(1\) is sometimes read as a \(0\), a \(0\) is never read as a \(1\). Compute \(L(0)\) and \(L(1)\). Describe the ML decoder of the \((n,1)\) repetition code on this channel, and compute its error probability.</p></div>
+</li>
+<li class="problem" id="p2">
+  <h3 class="p-head"><span class="p-num">Problem 2</span> <span class="p-title">Repetition, \(n = 5\)</span></h3>
+  <div class="p-body"><p>Compute the error probability of the \((5,1)\) repetition code with ML decoding on the BSC\((0.1)\). Compare with \(n=3\). What is the probability that the decoder has to guess on the BEC\((0.1)\)?</p></div>
+</li>
+<li class="problem" id="p3">
+  <h3 class="p-head"><span class="p-num">Problem 3</span> <span class="p-title">Hard against soft</span></h3>
+  <div class="p-body"><p>The \((3,1)\) repetition code is used and the receiver computes \(\Lv = (+3,-1,-1)\). What does the majority vote decide? What does ML decide? Compute \(P(c=0\mid\yv)\) for a uniform bit. (Hint: the LLR of the whole observation is \(\sum_i L_i\).)</p></div>
+</li>
+<li class="problem" id="p4">
+  <h3 class="p-head"><span class="p-num">Problem 4</span> <span class="p-title">Three receivers again</span></h3>
+  <div class="p-body"><p>With the code \(\Ccal = \{00000,\ 01011,\ 10101,\ 11110\}\) of Example 1.2 in the notes, the receiver computes \(\Lv = (-3,\ +2,\ +1,\ -1,\ -5)\). Decode with the soft decoder, with hard decisions, and with erasures where \(|L_i|\le 1\).</p></div>
+</li>
+<li class="problem" id="p5">
+  <h3 class="p-head"><span class="p-num">Problem 5</span> <span class="p-title">Detection</span></h3>
+  <div class="p-body"><p>Show that a code of minimum distance \(d\) <em>detects</em> every pattern of \(1\) to \(d-1\) errors on the BSC: the received word is not a codeword. Why can a pattern of \(d\) errors go unnoticed?</p></div>
+</li>
+  </ol>
+</section>
+</main></div>
+<footer class="site-footer" data-quiet>
+  <div class="wrap footer-grid">
+    <p class="footer-who">Communication Theory &middot; 2026–2027<br><a href="https://l2s.centralesupelec.fr/u/yang-sheng/">Sheng Yang</a> &middot; CentraleSupélec &middot; <a href="mailto:sheng.yang@centralesupelec.fr">sheng.yang@centralesupelec.fr</a><br>© 2026 Sheng Yang. All rights reserved.</p>
+  </div>
+</footer>
+</div>
+</body>
+</html>

@@ -1,0 +1,256 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Communication Theory</title>
+<meta name="description" content="Communication Theory: lecture notes, tutorials (TD) with corrections and labs (TP) with solutions. CentraleSupélec, 2nd year, 2026–2027.">
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&amp;family=Space+Mono:ital,wght@0,400;0,700;1,400&amp;family=Bricolage+Grotesque:opsz,wght@12..96,700&amp;display=swap">
+<link rel="stylesheet" href="assets/style.css">
+<script defer src="assets/site.js"></script>
+</head>
+<body>
+<canvas id="bitfield" aria-hidden="true"></canvas>
+<div class="page page-home">
+<div class="logo-bar" data-quiet><div class="wrap"><a class="ice-lockup" href="https://mention-ice.github.io/" aria-label="Mention Information &amp; Communication Engineering"><svg xmlns="http://www.w3.org/2000/svg" viewBox="226 116 444 230" aria-hidden="true"><circle cx="253.5" cy="142.5" r="22.5" fill="#86144F"/><path d="M253.5 207V315" stroke="#1C1722" stroke-width="42" stroke-linecap="round"/><path d="M487.1 161.2A92 92 0 1 0 487.1 302.2" fill="none" stroke="#86144F" stroke-width="36" stroke-linecap="round"/><path d="M454.2 198.2A42.5 42.5 0 1 0 454.2 265.2" fill="none" stroke="#706A7F" stroke-width="19" stroke-linecap="round"/><circle cx="428" cy="231.7" r="11" fill="#1C1722"/><path d="M573.3 146H645.7M573.3 317.5H645.7" stroke="#1C1722" stroke-width="38.5" stroke-linecap="round"/><path d="M573.3 232H608.7" stroke="#706A7F" stroke-width="38.5" stroke-linecap="round"/></svg><span>Information &amp;<br>Communication Engineering</span></a><a href="https://www.centralesupelec.fr/"><img class="cs-logo" src="assets/centralesupelec.png" alt="CentraleSupélec" width="390" height="200"></a></div></div>
+
+<header class="hero">
+  <div class="wrap hero-grid">
+    <div class="hero-text" data-quiet>
+      <p class="eyebrow">CentraleSupélec &middot; 2nd year &middot; 2026–2027</p>
+      <h1>Communication Theory</h1>
+      <p class="byline">Lecturer: <a href="https://l2s.centralesupelec.fr/u/yang-sheng/">Sheng Yang</a></p>
+      <blockquote class="shannon"><p>&ldquo;<em>The fundamental problem of communication is that of reproducing at one point either exactly or approximately a message selected at another point.</em>&rdquo;</p><footer>Claude Shannon, <cite>A mathematical theory of communication</cite>, 1948</footer></blockquote>
+    </div>
+    <figure class="h2-widget" data-qam>
+      <svg class="qam-chart" viewBox="0 0 224 224" role="img" aria-label="16QAM constellation: sent points as rings, received points as dots, wrongly decided points marked" data-cx="112" data-cy="112" data-unit="22">
+<line class="cell" x1="68" y1="8" x2="68" y2="216"/>
+<line class="cell" x1="8" y1="68" x2="216" y2="68"/>
+<line class="axis" x1="112" y1="8" x2="112" y2="216"/>
+<line class="axis" x1="8" y1="112" x2="216" y2="112"/>
+<line class="cell" x1="156" y1="8" x2="156" y2="216"/>
+<line class="cell" x1="8" y1="156" x2="216" y2="156"/>
+<g data-cloud></g>
+<circle class="tx" cx="46" cy="178" r="4.2"/>
+<circle class="tx" cx="46" cy="134" r="4.2"/>
+<circle class="tx" cx="46" cy="90" r="4.2"/>
+<circle class="tx" cx="46" cy="46" r="4.2"/>
+<circle class="tx" cx="90" cy="178" r="4.2"/>
+<circle class="tx" cx="90" cy="134" r="4.2"/>
+<circle class="tx" cx="90" cy="90" r="4.2"/>
+<circle class="tx" cx="90" cy="46" r="4.2"/>
+<circle class="tx" cx="134" cy="178" r="4.2"/>
+<circle class="tx" cx="134" cy="134" r="4.2"/>
+<circle class="tx" cx="134" cy="90" r="4.2"/>
+<circle class="tx" cx="134" cy="46" r="4.2"/>
+<circle class="tx" cx="178" cy="178" r="4.2"/>
+<circle class="tx" cx="178" cy="134" r="4.2"/>
+<circle class="tx" cx="178" cy="90" r="4.2"/>
+<circle class="tx" cx="178" cy="46" r="4.2"/>
+</svg>
+      <div class="h2-control">
+        <label for="snr">Signal-to-noise ratio <i>E</i><sub>s</sub>/<i>N</i><sub>0</sub></label>
+        <input id="snr" type="range" min="0" max="24" step="0.5" value="16">
+      </div>
+      <figcaption class="h2-read" aria-live="polite">
+        <span><i>E</i><sub>s</sub>/<i>N</i><sub>0</sub> = <b data-out="snr">16.0</b> dB</span>
+        <span>wrong symbols: <b data-out="ser">–</b></span>
+        <span>bit error probability = <b data-out="ber">–</b></span>
+        <span>capacity log&#8322;(1 + SNR) = <b data-out="cap">–</b> bits per symbol; 16QAM sends 4</span>
+      </figcaption>
+    </figure>
+  </div>
+  <div class="channel" data-channel data-bits="00011011110111010011111110101000011100011011011111000000100110010110101111100" data-p="0.01" aria-label="The course title, Huffman-coded, sent through the binary channel made by 16QAM hard decisions">
+    <div class="wrap channel-grid">
+      <span class="ch-label">X<sup>n</sup></span>
+      <div class="ch-row ch-x" data-row="x">00011011110111010011111110101000011100011011011111000000100110010110101111100</div>
+      <span class="ch-label ch-mid">BSC(<i>p</i>)</span>
+      <div class="ch-meter"><span data-out="phat">p&#770; = –</span></div>
+      <span class="ch-label">Y<sup>n</sup></span>
+      <div class="ch-row ch-y" data-row="y">00011011110111010011111110101000011100011011011111000000100110010110101111100</div>
+    </div>
+    <p class="wrap ch-caption">Above: 16QAM symbols through Gaussian noise; the dashed lines are the decision boundaries and <span class="flip-key">orange dots</span> are wrongly decided. X<sup>n</sup>: the course title, Huffman-coded (77 bits, 3.85 bits per character against an entropy of 3.78). Y<sup>n</sup>: the same bits after hard decisions on Gray-labelled 16QAM at this SNR, a binary symmetric channel; <span class="flip-key">flipped bits</span> are marked. Drag the SNR above.</p>
+  </div>
+</header>
+<div class="sheet-wrap wrap"><main class="sheet">
+  <section class="block" id="sessions" aria-labelledby="sessions-h">
+    <div class="block-head"><h2 id="sessions-h">Sessions</h2><p class="block-sub">19 sessions of 1 h 30, in teaching order. Each page goes online after its session.</p></div>
+    <div class="parts-key"><span><span class="part-tag part-coding">Channel coding</span></span><span><span class="part-tag part-signals">Signals and receivers</span></span><span><span class="part-tag part-source">Source coding and limits</span></span></div>
+    <ol class="lectures">
+<li class="lec is-online">
+  <div class="lec-id"><span class="lec-n">Lecture 1</span><span class="lec-bin" title="session 1 in binary">00001</span></div>
+  <div class="lec-main">
+    <h3><a href="lecture-1.html">Channels and optimal decoding</a></h3>
+    <p class="lec-head"><span class="part-tag part-coding">Channel coding</span><span class="lec-kind">Lecture</span></p>
+    <p class="lec-links"><a href="lecture-1.html#notes">Notes</a> <a href="lecture-1.html#quiz">Quiz <span class="count">12</span></a> <a href="lecture-1.html#exercises">Exercises <span class="count">5</span></a></p>
+  </div>
+</li>
+<li class="lec is-upcoming">
+  <div class="lec-id"><span class="lec-n">Lecture 2</span><span class="lec-bin" title="session 2 in binary">00010</span></div>
+  <div class="lec-main">
+    <h3>Linear block codes, Hamming codes</h3>
+    <p class="lec-head"><span class="part-tag part-coding">Channel coding</span><span class="lec-kind">Lecture</span></p>
+    <p class="lec-date">Online after the session</p>
+  </div>
+</li>
+<li class="lec is-upcoming">
+  <div class="lec-id"><span class="lec-n">TD1</span><span class="lec-bin" title="session 3 in binary">00011</span></div>
+  <div class="lec-main">
+    <h3>Decoding by hand: block codes and the Hamming bound</h3>
+    <p class="lec-head"><span class="part-tag part-coding">Channel coding</span><span class="lec-kind">TD · tutorial</span></p>
+    <p class="lec-date">Online after the session</p>
+  </div>
+</li>
+<li class="lec is-upcoming">
+  <div class="lec-id"><span class="lec-n">Lecture 3</span><span class="lec-bin" title="session 4 in binary">00100</span></div>
+  <div class="lec-main">
+    <h3>Convolutional codes, Viterbi algorithm</h3>
+    <p class="lec-head"><span class="part-tag part-coding">Channel coding</span><span class="lec-kind">Lecture</span></p>
+    <p class="lec-date">Online after the session</p>
+  </div>
+</li>
+<li class="lec is-upcoming">
+  <div class="lec-id"><span class="lec-n">TP1</span><span class="lec-bin" title="session 5 in binary">00101</span></div>
+  <div class="lec-main">
+    <h3>Your own Hamming and Viterbi decoders</h3>
+    <p class="lec-head"><span class="part-tag part-coding">Channel coding</span><span class="lec-kind">TP · lab</span></p>
+    <p class="lec-date">Online after the session</p>
+  </div>
+</li>
+<li class="lec is-upcoming">
+  <div class="lec-id"><span class="lec-n">Lecture 4</span><span class="lec-bin" title="session 6 in binary">00110</span></div>
+  <div class="lec-main">
+    <h3>Reed–Solomon codes</h3>
+    <p class="lec-head"><span class="part-tag part-coding">Channel coding</span><span class="lec-kind">Lecture</span></p>
+    <p class="lec-date">Online after the session</p>
+  </div>
+</li>
+<li class="lec is-upcoming">
+  <div class="lec-id"><span class="lec-n">TD2</span><span class="lec-bin" title="session 7 in binary">00111</span></div>
+  <div class="lec-main">
+    <h3>Viterbi by hand, Berlekamp–Welch over GF(7)</h3>
+    <p class="lec-head"><span class="part-tag part-coding">Channel coding</span><span class="lec-kind">TD · tutorial</span></p>
+    <p class="lec-date">Online after the session</p>
+  </div>
+</li>
+<li class="lec is-upcoming">
+  <div class="lec-id"><span class="lec-n">Lecture 5</span><span class="lec-bin" title="session 8 in binary">01000</span></div>
+  <div class="lec-main">
+    <h3>Signals as vectors, sampling theorem</h3>
+    <p class="lec-head"><span class="part-tag part-signals">Signals and receivers</span><span class="lec-kind">Lecture</span></p>
+    <p class="lec-date">Online after the session</p>
+  </div>
+</li>
+<li class="lec is-upcoming">
+  <div class="lec-id"><span class="lec-n">TP2</span><span class="lec-bin" title="session 9 in binary">01001</span></div>
+  <div class="lec-main">
+    <h3>Reed–Solomon and a QR code to scratch</h3>
+    <p class="lec-head"><span class="part-tag part-coding">Channel coding</span><span class="lec-kind">TP · lab</span></p>
+    <p class="lec-date">Online after the session</p>
+  </div>
+</li>
+<li class="lec is-upcoming">
+  <div class="lec-id"><span class="lec-n">Lecture 6</span><span class="lec-bin" title="session 10 in binary">01010</span></div>
+  <div class="lec-main">
+    <h3>Modulation, pulses, Nyquist criterion</h3>
+    <p class="lec-head"><span class="part-tag part-signals">Signals and receivers</span><span class="lec-kind">Lecture</span></p>
+    <p class="lec-date">Online after the session</p>
+  </div>
+</li>
+<li class="lec is-upcoming">
+  <div class="lec-id"><span class="lec-n">Lecture 7</span><span class="lec-bin" title="session 11 in binary">01011</span></div>
+  <div class="lec-main">
+    <h3>Noise and the matched filter</h3>
+    <p class="lec-head"><span class="part-tag part-signals">Signals and receivers</span><span class="lec-kind">Lecture</span></p>
+    <p class="lec-date">Online after the session</p>
+  </div>
+</li>
+<li class="lec is-upcoming">
+  <div class="lec-id"><span class="lec-n">Lecture 8</span><span class="lec-bin" title="session 12 in binary">01100</span></div>
+  <div class="lec-main">
+    <h3>Detection and soft decisions</h3>
+    <p class="lec-head"><span class="part-tag part-signals">Signals and receivers</span><span class="lec-kind">Lecture</span></p>
+    <p class="lec-date">Online after the session</p>
+  </div>
+</li>
+<li class="lec is-upcoming">
+  <div class="lec-id"><span class="lec-n">TD3</span><span class="lec-bin" title="session 13 in binary">01101</span></div>
+  <div class="lec-main">
+    <h3>Pulses, noise and detection</h3>
+    <p class="lec-head"><span class="part-tag part-signals">Signals and receivers</span><span class="lec-kind">TD · tutorial</span></p>
+    <p class="lec-date">Online after the session</p>
+  </div>
+</li>
+<li class="lec is-upcoming">
+  <div class="lec-id"><span class="lec-n">Lecture 9</span><span class="lec-bin" title="session 14 in binary">01110</span></div>
+  <div class="lec-main">
+    <h3>Lossless compression: Huffman codes</h3>
+    <p class="lec-head"><span class="part-tag part-source">Source coding and limits</span><span class="lec-kind">Lecture</span></p>
+    <p class="lec-date">Online after the session</p>
+  </div>
+</li>
+<li class="lec is-upcoming">
+  <div class="lec-id"><span class="lec-n">TP3</span><span class="lec-bin" title="session 15 in binary">01111</span></div>
+  <div class="lec-main">
+    <h3>Your own receiver for a real room with echoes</h3>
+    <p class="lec-head"><span class="part-tag part-signals">Signals and receivers</span><span class="lec-kind">TP · lab</span></p>
+    <p class="lec-date">Online after the session</p>
+  </div>
+</li>
+<li class="lec is-upcoming">
+  <div class="lec-id"><span class="lec-n">Lecture 10</span><span class="lec-bin" title="session 16 in binary">10000</span></div>
+  <div class="lec-main">
+    <h3>Lossy compression: quantization</h3>
+    <p class="lec-head"><span class="part-tag part-source">Source coding and limits</span><span class="lec-kind">Lecture</span></p>
+    <p class="lec-date">Online after the session</p>
+  </div>
+</li>
+<li class="lec is-upcoming">
+  <div class="lec-id"><span class="lec-n">TD4</span><span class="lec-bin" title="session 17 in binary">10001</span></div>
+  <div class="lec-main">
+    <h3>Huffman codes and quantizers</h3>
+    <p class="lec-head"><span class="part-tag part-source">Source coding and limits</span><span class="lec-kind">TD · tutorial</span></p>
+    <p class="lec-date">Online after the session</p>
+  </div>
+</li>
+<li class="lec is-upcoming">
+  <div class="lec-id"><span class="lec-n">Lecture 11</span><span class="lec-bin" title="session 18 in binary">10010</span></div>
+  <div class="lec-main">
+    <h3>Capacity, source–channel separation</h3>
+    <p class="lec-head"><span class="part-tag part-source">Source coding and limits</span><span class="lec-kind">Lecture</span></p>
+    <p class="lec-date">Online after the session</p>
+  </div>
+</li>
+<li class="lec is-upcoming">
+  <div class="lec-id"><span class="lec-n">TP4</span><span class="lec-bin" title="session 19 in binary">10011</span></div>
+  <div class="lec-main">
+    <h3>Send the best picture through the air</h3>
+    <p class="lec-head"><span class="part-tag part-source">Source coding and limits</span><span class="lec-kind">TP · lab</span></p>
+    <p class="lec-date">Online after the session</p>
+  </div>
+</li>
+    </ol>
+  </section>
+  <section class="block" id="how" aria-labelledby="how-h">
+    <div class="block-head"><h2 id="how-h">How the course works</h2></div>
+    <ul class="how">
+      <li><h3>Lectures</h3><p>Theory on the blackboard: definitions, proofs, examples. The lecture notes are posted here, lecture by lecture. Take your own notes.</p></li>
+      <li><h3>TD (tutorials)</h3><p>One exam-style problem on paper, then an interactive web page where you compute and the page checks every step. Bring a laptop, a tablet or a phone. Corrections are posted here.</p></li>
+      <li><h3>TP (labs)</h3><p>Python notebooks: you write the decoders and the receiver, on real rooms recorded with a phone. Attendance is mandatory. Solutions are posted here.</p></li>
+    </ul>
+    <p class="eval"><b>Evaluation.</b> A 2-hour written exam, documents allowed, gives the final score. The four TPs are mandatory: your work is handed in at the end of each session and is evaluated as part of the “compétence”, not in the final score.</p>
+    <div class="files"><a class="file-btn" href="files/course-presentation.pdf"><span class="file-kind">PDF</span><span class="file-name">Course presentation (slides of Lecture 1)</span><span class="file-size">2190 KB</span></a></div>
+  </section>
+  <section class="block" id="references" aria-labelledby="refs-h"><div class="block-head"><h2 id="refs-h">References</h2></div><ul class="refs"><li>R. G. Gallager, “Principles of Digital Communication”, Cambridge University Press, 2008</li><li>A. Lapidoth, “A Foundation in Digital Communication”, Cambridge University Press, 2009</li><li>T. M. Cover and J. A. Thomas, “Elements of Information Theory”, Wiley, 2nd edition, 2006</li><li>G. D. Forney, lecture notes of “Principles of Digital Communication II” (MIT 6.451), on which the channel coding part is based</li></ul><p class="hint">Further reading: D. MacKay, “Information Theory, Inference, and Learning Algorithms”; J. Soni and R. Goodman, “A Mind at Play”; J. Gleick, “The Information”.</p></section>
+</main></div>
+<footer class="site-footer" data-quiet>
+  <div class="wrap footer-grid">
+    <p class="footer-who">Communication Theory &middot; 2026–2027<br><a href="https://l2s.centralesupelec.fr/u/yang-sheng/">Sheng Yang</a> &middot; CentraleSupélec &middot; <a href="mailto:sheng.yang@centralesupelec.fr">sheng.yang@centralesupelec.fr</a><br>© 2026 Sheng Yang. All rights reserved.</p>
+  </div>
+</footer>
+</div>
+</body>
+</html>
