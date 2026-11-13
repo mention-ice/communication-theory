@@ -172,13 +172,11 @@ sup.fnref { font-family: var(--mono); font-size: 0.68em; color: var(--signal); }
 }
 
 .hero h1 {
-  /* Chalkduster is an Apple system font (macOS, iOS): it cannot be served from the site.
-     Other systems get Cabin Sketch from Google Fonts, a free chalk-like face. */
-  font-family: "Chalkduster", "Cabin Sketch", var(--mono);
-  font-weight: 400;
-  font-size: clamp(2.1rem, 5.2vw, 3.8rem);
-  line-height: 1.12;
-  letter-spacing: 0;
+  font-family: var(--mono);
+  font-weight: 700;
+  font-size: clamp(2.2rem, 5.6vw, 4rem);
+  line-height: 1.02;
+  letter-spacing: -0.035em;
 }
 
 .byline { font-size: 1.05rem; color: var(--ink-2); }
