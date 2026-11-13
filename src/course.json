@@ -8,11 +8,30 @@
   "email": "sheng.yang@centralesupelec.fr",
   "copyright": "© 2026 Sheng Yang. All rights reserved.",
   "parts": {
-    "coding": {"name": "Channel coding", "question": "A channel makes errors or erasures. How much can a code repair, and how do we decode it?"},
-    "signals": {"name": "Signals and receivers", "question": "How do bits become a waveform, and how does a receiver get them back out of the noise?"},
-    "source": {"name": "Source coding and limits", "question": "How few bits can describe a source, and how fast can a channel carry them?"}
+    "coding": {
+      "name": "Channel coding",
+      "question": "A channel makes errors or erasures. How much can a code repair, and how do we decode it?"
+    },
+    "signals": {
+      "name": "Signals and receivers",
+      "question": "How do bits become a waveform, and how does a receiver get them back out of the noise?"
+    },
+    "source": {
+      "name": "Source coding and limits",
+      "question": "How few bits can describe a source, and how fast can a channel carry them?"
+    }
   },
-  "presentation": {"file": "course-presentation.pdf", "name": "Course presentation (slides of Lecture 1)"},
+  "presentation": {
+    "file": "course-presentation.pdf",
+    "name": "Course presentation (slides of Lecture 1)"
+  },
+  "related": [
+    {
+      "name": "Elements of Information Theory",
+      "url": "https://mention-ice.github.io/information-theory/",
+      "note": "The graduate course (M2) by the same lecturer: information measures, the method of types, lossless and lossy compression, channel coding, and information theory in statistics and machine learning. It is where the limits stated in this course are proved."
+    }
+  ],
   "references": [
     "R. G. Gallager, “Principles of Digital Communication”, Cambridge University Press, 2008",
     "A. Lapidoth, “A Foundation in Digital Communication”, Cambridge University Press, 2009",
@@ -21,24 +40,141 @@
   ],
   "further_reading": "D. MacKay, “Information Theory, Inference, and Learning Algorithms”; J. Soni and R. Goodman, “A Mind at Play”; J. Gleick, “The Information”.",
   "sessions": [
-    {"id": "lecture-1", "kind": "lecture", "label": "Lecture 1", "part": "coding", "title": "Channels and optimal decoding", "date": "", "online": true, "content": "content/lecture-1.py"},
-    {"id": "lecture-2", "kind": "lecture", "label": "Lecture 2", "part": "coding", "title": "Linear block codes, Hamming codes"},
-    {"id": "td-1", "kind": "td", "label": "TD1", "part": "coding", "title": "Decoding by hand: block codes and the Hamming bound"},
-    {"id": "lecture-3", "kind": "lecture", "label": "Lecture 3", "part": "coding", "title": "Convolutional codes, Viterbi algorithm"},
-    {"id": "tp-1", "kind": "tp", "label": "TP1", "part": "coding", "title": "Your own Hamming and Viterbi decoders"},
-    {"id": "lecture-4", "kind": "lecture", "label": "Lecture 4", "part": "coding", "title": "Reed–Solomon codes"},
-    {"id": "td-2", "kind": "td", "label": "TD2", "part": "coding", "title": "Viterbi by hand, Berlekamp–Welch over GF(7)"},
-    {"id": "lecture-5", "kind": "lecture", "label": "Lecture 5", "part": "signals", "title": "Signals as vectors, sampling theorem"},
-    {"id": "tp-2", "kind": "tp", "label": "TP2", "part": "coding", "title": "Reed–Solomon and a QR code to scratch"},
-    {"id": "lecture-6", "kind": "lecture", "label": "Lecture 6", "part": "signals", "title": "Modulation, pulses, Nyquist criterion"},
-    {"id": "lecture-7", "kind": "lecture", "label": "Lecture 7", "part": "signals", "title": "Noise and the matched filter"},
-    {"id": "lecture-8", "kind": "lecture", "label": "Lecture 8", "part": "signals", "title": "Detection and soft decisions"},
-    {"id": "td-3", "kind": "td", "label": "TD3", "part": "signals", "title": "Pulses, noise and detection"},
-    {"id": "lecture-9", "kind": "lecture", "label": "Lecture 9", "part": "source", "title": "Lossless compression: Huffman codes"},
-    {"id": "tp-3", "kind": "tp", "label": "TP3", "part": "signals", "title": "Your own receiver for a real room with echoes"},
-    {"id": "lecture-10", "kind": "lecture", "label": "Lecture 10", "part": "source", "title": "Lossy compression: quantization"},
-    {"id": "td-4", "kind": "td", "label": "TD4", "part": "source", "title": "Huffman codes and quantizers"},
-    {"id": "lecture-11", "kind": "lecture", "label": "Lecture 11", "part": "source", "title": "Capacity, source–channel separation"},
-    {"id": "tp-4", "kind": "tp", "label": "TP4", "part": "source", "title": "Send the best picture through the air"}
+    {
+      "id": "lecture-1",
+      "kind": "lecture",
+      "label": "Lecture 1",
+      "part": "coding",
+      "title": "Channels and optimal decoding",
+      "date": "",
+      "online": true,
+      "content": "content/lecture-1.py"
+    },
+    {
+      "id": "lecture-2",
+      "kind": "lecture",
+      "label": "Lecture 2",
+      "part": "coding",
+      "title": "Linear block codes, Hamming codes"
+    },
+    {
+      "id": "td-1",
+      "kind": "td",
+      "label": "TD1",
+      "part": "coding",
+      "title": "Decoding by hand: block codes and the Hamming bound"
+    },
+    {
+      "id": "lecture-3",
+      "kind": "lecture",
+      "label": "Lecture 3",
+      "part": "coding",
+      "title": "Convolutional codes, Viterbi algorithm"
+    },
+    {
+      "id": "tp-1",
+      "kind": "tp",
+      "label": "TP1",
+      "part": "coding",
+      "title": "Your own Hamming and Viterbi decoders"
+    },
+    {
+      "id": "lecture-4",
+      "kind": "lecture",
+      "label": "Lecture 4",
+      "part": "coding",
+      "title": "Reed–Solomon codes"
+    },
+    {
+      "id": "td-2",
+      "kind": "td",
+      "label": "TD2",
+      "part": "coding",
+      "title": "Viterbi by hand, Berlekamp–Welch over GF(7)"
+    },
+    {
+      "id": "lecture-5",
+      "kind": "lecture",
+      "label": "Lecture 5",
+      "part": "signals",
+      "title": "Signals as vectors, sampling theorem"
+    },
+    {
+      "id": "tp-2",
+      "kind": "tp",
+      "label": "TP2",
+      "part": "coding",
+      "title": "Reed–Solomon and a QR code to scratch"
+    },
+    {
+      "id": "lecture-6",
+      "kind": "lecture",
+      "label": "Lecture 6",
+      "part": "signals",
+      "title": "Modulation, pulses, Nyquist criterion"
+    },
+    {
+      "id": "lecture-7",
+      "kind": "lecture",
+      "label": "Lecture 7",
+      "part": "signals",
+      "title": "Noise and the matched filter"
+    },
+    {
+      "id": "lecture-8",
+      "kind": "lecture",
+      "label": "Lecture 8",
+      "part": "signals",
+      "title": "Detection and soft decisions"
+    },
+    {
+      "id": "td-3",
+      "kind": "td",
+      "label": "TD3",
+      "part": "signals",
+      "title": "Pulses, noise and detection"
+    },
+    {
+      "id": "lecture-9",
+      "kind": "lecture",
+      "label": "Lecture 9",
+      "part": "source",
+      "title": "Lossless compression: Huffman codes"
+    },
+    {
+      "id": "tp-3",
+      "kind": "tp",
+      "label": "TP3",
+      "part": "signals",
+      "title": "Your own receiver for a real room with echoes"
+    },
+    {
+      "id": "lecture-10",
+      "kind": "lecture",
+      "label": "Lecture 10",
+      "part": "source",
+      "title": "Lossy compression: quantization"
+    },
+    {
+      "id": "td-4",
+      "kind": "td",
+      "label": "TD4",
+      "part": "source",
+      "title": "Huffman codes and quantizers"
+    },
+    {
+      "id": "lecture-11",
+      "kind": "lecture",
+      "label": "Lecture 11",
+      "part": "source",
+      "title": "Capacity, source–channel separation"
+    },
+    {
+      "id": "tp-4",
+      "kind": "tp",
+      "label": "TP4",
+      "part": "source",
+      "title": "Send the best picture through the air"
+    }
   ]
 }

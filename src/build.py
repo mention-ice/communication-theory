@@ -116,7 +116,7 @@ def logo_bar():
 def footer(C):
     return f"""<footer class="site-footer" data-quiet>
   <div class="wrap footer-grid">
-    <p class="footer-who">{esc(C['title'])} &middot; {C['year']}<br><a href="{C['lecturer_url']}">{esc(C['lecturer'])}</a> &middot; {esc(C['school'])} &middot; <a href="mailto:{C['email']}">{C['email']}</a><br>{esc(C['copyright'])}</p>
+    <p class="footer-who">{esc(C['title'])} &middot; {C['year']}<br><a href="{C['lecturer_url']}">{esc(C['lecturer'])}</a> &middot; {esc(C['school'])} &middot; <a href="mailto:{C['email']}">{C['email']}</a>{''.join(f' &middot; <a href="{r["url"]}">{esc(r["name"])}</a>' for r in C.get('related', []))}<br>{esc(C['copyright'])}</p>
   </div>
 </footer>
 </div>
@@ -201,6 +201,11 @@ def build_index(C):
         fp = os.path.join(SRC, "files", pres["file"])
         pres_html = f'<div class="files"><a class="file-btn" href="files/{pres["file"]}"><span class="file-kind">PDF</span><span class="file-name">{esc(pres["name"])}</span><span class="file-size">{kb(fp)}</span></a></div>'
     refs = "".join(f"<li>{esc(r)}</li>" for r in C["references"])
+    related_html = ""
+    if C.get("related"):
+        cards = "".join(f'<a class="file-btn" href="{r["url"]}"><span class="file-kind">WEB</span><span class="file-name">{esc(r["name"])}</span><span class="file-size">{esc(r["url"].split("//")[1].rstrip("/"))}</span></a><p class="hint related-note">{esc(r["note"])}</p>' for r in C["related"])
+        related_html = f'  <section class="block" id="related" aria-labelledby="related-h"><div class="block-head"><h2 id="related-h">Going further</h2></div><div class="files">{cards}</div></section>'
+
     key = "".join(f'<span><span class="part-tag part-{k}">{esc(v["name"])}</span></span>' for k, v in C["parts"].items())
     out = head(title, f"{title}: lecture notes, tutorials (TD) with corrections and labs (TP) with solutions. {C['school']}, {C['level']}, {C['year']}.")
     out += '<div class="page page-home">\n' + logo_bar()
@@ -257,6 +262,7 @@ def build_index(C):
     <p class="eval"><b>Evaluation.</b> A 2-hour written exam, documents allowed, gives the final score. The four TPs are mandatory: your work is handed in at the end of each session and is evaluated as part of the “compétence”, not in the final score.</p>
     {pres_html}
   </section>
+{related_html}
   <section class="block" id="references" aria-labelledby="refs-h"><div class="block-head"><h2 id="refs-h">References</h2></div><ul class="refs">{refs}</ul><p class="hint">Further reading: {esc(C['further_reading'])}</p></section>
 </main></div>
 """

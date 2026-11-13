@@ -842,3 +842,4 @@ figure.tikz img { display: inline-block; max-width: 100%; height: auto; }
 .qam-chart .rx.err { fill: var(--noise); fill-opacity: 0.95; }
 .qam-chart .tx { fill: none; stroke: var(--ink); stroke-width: 1.6; }
 .qam-chart .lbl { font: 400 8.5px var(--mono); fill: var(--ink-3); }
+.related-note { margin: 0.1rem 0 0.4rem; }
