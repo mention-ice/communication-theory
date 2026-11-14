@@ -25,6 +25,7 @@ OUT = os.path.join(ROOT, "docs")
 MATHJAX_MACROS = {
     "xv": r"\mathbf{x}", "yv": r"\mathbf{y}", "cv": r"\mathbf{c}", "Lv": r"\mathbf{L}",
     "Ccal": r"\mathcal{C}", "Xcal": r"\mathcal{X}", "Ycal": r"\mathcal{Y}",
+    "rv": [r"\mathrm{#1}", 1],
 }
 
 ICE_SVG = ('<svg xmlns="http://www.w3.org/2000/svg" viewBox="226 116 444 230" aria-hidden="true">'
