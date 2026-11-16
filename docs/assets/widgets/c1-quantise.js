@@ -1,8 +1,10 @@
-/* Lecture 1, Section 1.3: quantising the LLR. The bit is sent as the level (-1)^x sqrt(Es) in Gaussian noise
-   of variance N0/2, so L = 4 sqrt(Es) y / N0 is Gaussian with mean +-4 Es/N0 and variance 8 Es/N0.
-   The receiver passes on L (general channel), its sign (two levels: a BSC(delta)), or its sign and an
-   erasure when |L| <= T (three levels). The bars compare the Bhattacharyya parameter beta of what the
-   decoder sees (Section 1.4: the smaller, the better).
+/* Lecture 1, Problem 7 of the page: three levels on the Gaussian channel (Sections 1.3 and 1.4 of the notes).
+   It sits in the exercises, not in the text, because three levels never give a BEC (Sheng, 16 Nov 2026).
+   The bit is sent as the level (-1)^x sqrt(Es) in Gaussian noise of variance N0/2, so L = 4 sqrt(Es) y / N0
+   is Gaussian with mean +-4 Es/N0 and variance 8 Es/N0. The receiver passes on L (general channel), its sign
+   (two levels: a BSC(delta)), or its sign and an erasure when |L| <= T (three levels: erased with probability
+   eps, kept but wrong with probability rho, and rho > 0 for every T). The bars compare the Bhattacharyya
+   parameter beta of what the decoder sees (the smaller, the better).
    Draws into every [data-widget="c1-quantise"]. Optional arguments: snr=0 (Es/N0 in dB), T=2, mode=two.
    No libraries. */
 (function () {
@@ -119,8 +121,8 @@
       var r;
       if (mode === "soft") r = "The receiver passes on <b>L</b> itself: each bit comes with its own confidence. Nothing is lost, and β = <i>e</i><sup>−E<sub>s</sub>/N<sub>0</sub></sup> = " + bS.toFixed(3) + ".";
       else if (mode === "two") r = "The receiver keeps the sign of <i>L</i>. When 0 is sent, the decision is wrong with probability <b>δ = " + fmtP(delta) + "</b> (red area), and the same holds for 1: the decoder sees a <b>BSC(δ)</b>.";
-      else r = "When 0 is sent, the bit is <b>erased</b> with probability " + fmtP(eps) + " (grey area) and <b>wrong</b> with probability " + fmtP(rho) + " (red area). " +
-        (rho < 1e-3 ? "Almost all the kept bits are right: this is close to a BEC(" + eps.toFixed(2) + ")." : "Some kept bits are still wrong: this is not quite a BEC.") +
+      else r = "When 0 is sent, the bit is <b>erased</b> with probability ε = " + fmtP(eps) + " (grey area), and it is <b>kept but wrong</b> with probability ρ = " + fmtP(rho) +
+        " (red area); the same holds when 1 is sent. A kept bit can still be wrong." +
         (b3 < b2 ? " With this threshold, three levels beat two." : " With this threshold, three levels do worse than two: try another T.");
       read.innerHTML = r;
     }

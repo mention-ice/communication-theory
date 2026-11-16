@@ -58,5 +58,13 @@ PAGE = {
    "body": r"<p>Show that a code of minimum distance \(d\) <em>detects</em> every pattern of \(1\) to \(d-1\) errors on the BSC: the received word is not a codeword. Why can a pattern of \(d\) errors go unnoticed?</p>"},
   {"title": "Two bounds",
    "body": r"<p>For the code \(\Ccal = \{00000,\ 01011,\ 10101,\ 11110\}\) of Example 1.5 on the BSC\((0.1)\), compare the bound \(2\beta^3+\beta^4\) of Section 1.4 with the probability of more than one flip among the five bits. On the BEC\((0.1)\), compare it with the probability of at least three erasures. Which bound is better on each channel?</p>"},
+  {"title": "Three levels on the Gaussian channel",
+   "body": r"""<p>In the Gaussian example of Section 1.2, \(y = (-1)^x\sqrt{E_s}+z\) with \(z\sim\mathcal N(0,N_0/2)\), and \(L = 4\sqrt{E_s}\,y/N_0\). The receiver with three levels of Section 1.3 declares an erasure when \(|L|\le T\), and otherwise keeps the sign of \(L\). When \(0\) is sent, the bit is erased with probability \(\varepsilon\), and it is kept but wrong with probability \(\rho\); the same holds when \(1\) is sent.</p>
+<ol class="tex-list enum-lower-alpha enum-paren">
+<li>Draw the channel that the decoder sees, from \(x\in\{0,1\}\) to \(y\in\{0,1,?\}\). Why is it not a BEC, whatever the threshold \(T\)? What is it for \(T=0\)?</li>
+<li>Compute its three LLRs, and show that its Bhattacharyya parameter is \(\beta = \varepsilon+2\sqrt{\rho\,(1-\varepsilon-\rho)}\).</li>
+<li>With the illustration below, at \(E_s/N_0 = 0\) dB, find a threshold for which three levels beat two, and one for which they do worse. Can any threshold beat keeping \(L\)?</li>
+</ol>
+<div class="widget" data-widget="c1-quantise" data-args="mode=three"><noscript><p class="hint">Turn on JavaScript to see this illustration.</p></noscript></div>"""},
  ],
 }

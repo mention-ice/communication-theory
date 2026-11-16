@@ -10,8 +10,8 @@ Inputs, all in src/:
                      (and, for TDs and TPs, links to the interactive pages). "notes_html" names
                      the web version of the notes, content/<id>-notes.html, made from the LaTeX
                      source by tools/notes2html.py; its drawings are in figures/.
-  assets/widgets/    the interactive illustrations of the notes: <name>.js and <name>.css draw
-                     into every <div class="widget" data-widget="<name>">.
+  assets/widgets/    the interactive illustrations of the notes and of the exercises: <name>.js and
+                     <name>.css draw into every <div class="widget" data-widget="<name>">.
   files/             PDFs and notebooks linked from the pages (copied to docs/files/).
   assets/            style.css, site.js, logos (copied to docs/assets/).
 
@@ -294,7 +294,8 @@ def build_session(C, s, prev, nxt):
         with open(os.path.join(SRC, P["notes_html"]), encoding="utf-8") as f:
             notes = f.read()
     extra = ""
-    for w in sorted(set(re.findall(r'data-widget="([\w-]+)"', notes))):
+    bodies = notes + "".join(e["body"] for e in P.get("exercises", []))
+    for w in sorted(set(re.findall(r'data-widget="([\w-]+)"', bodies))):
         if os.path.exists(os.path.join(SRC, "assets", "widgets", w + ".css")):
             extra += f'<link rel="stylesheet" href="assets/widgets/{w}.css">\n'
         extra += f'<script defer src="assets/widgets/{w}.js"></script>\n'
