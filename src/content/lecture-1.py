@@ -12,6 +12,7 @@ PAGE = {
   {"path": "files/lecture-1-notes.pdf", "name": "Lecture notes"},
   {"path": "files/course-presentation.pdf", "name": "Course presentation (slides)"},
  ],
+ "notes_html": "content/lecture-1-notes.html",
  "contents": [
   ["1.1", "The setting: channel, code, decoder"],
   ["1.2", "Binary input: LLRs and ML decoding"],

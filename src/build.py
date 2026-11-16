@@ -7,7 +7,11 @@ Inputs, all in src/:
   course.json        course data and the 19 sessions, in teaching order.
                      A session gets its own page once "online": true and "content" is set.
   content/<id>.py    content of one page: summary, files, contents, quiz, exercises
-                     (and, for TDs and TPs, links to the interactive pages).
+                     (and, for TDs and TPs, links to the interactive pages). "notes_html" names
+                     the web version of the notes, content/<id>-notes.html, made from the LaTeX
+                     source by tools/notes2html.py; its drawings are in figures/.
+  assets/widgets/    the interactive illustrations of the notes: <name>.js and <name>.css draw
+                     into every <div class="widget" data-widget="<name>">.
   files/             PDFs and notebooks linked from the pages (copied to docs/files/).
   assets/            style.css, site.js, logos (copied to docs/assets/).
 
@@ -15,7 +19,7 @@ The design follows the site of "Elements of Information Theory"
 (https://mention-ice.github.io/information-theory/), in the Mention ICE palette.
 docs/ is generated: do not edit it by hand.
 """
-import hashlib, heapq, html, json, math, os, random, shutil, sys
+import hashlib, heapq, html, json, math, os, random, re, shutil, sys
 from collections import Counter
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -26,6 +30,7 @@ MATHJAX_MACROS = {
     "xv": r"\mathbf{x}", "yv": r"\mathbf{y}", "cv": r"\mathbf{c}", "Lv": r"\mathbf{L}",
     "Ccal": r"\mathcal{C}", "Xcal": r"\mathcal{X}", "Ycal": r"\mathcal{Y}",
     "rv": [r"\mathrm{#1}", 1],
+    "ind": [r"\boldsymbol{1}_{\{#1\}}", 1],
 }
 
 ICE_SVG = ('<svg xmlns="http://www.w3.org/2000/svg" viewBox="226 116 444 230" aria-hidden="true">'
@@ -283,8 +288,17 @@ def build_session(C, s, prev, nxt):
         cws.append(f'<span class="cw cw{k % 2}" title="{name} &rarr; {code[ch]}">{code[ch]}</span>')
     nbits = sum(len(code[ch]) for ch in s["title"])
     links = page_links(s, P)
+    notes = ""
+    if P.get("notes_html"):
+        with open(os.path.join(SRC, P["notes_html"]), encoding="utf-8") as f:
+            notes = f.read()
+    extra = ""
+    for w in sorted(set(re.findall(r'data-widget="([\w-]+)"', notes))):
+        if os.path.exists(os.path.join(SRC, "assets", "widgets", w + ".css")):
+            extra += f'<link rel="stylesheet" href="assets/widgets/{w}.css">\n'
+        extra += f'<script defer src="assets/widgets/{w}.js"></script>\n'
     jump = "".join(f'<a href="#{a}">{t}' + (f' <span class="count">{n}</span>' if n else "") + "</a>" for a, t, n in links)
-    o = head(f"{s['label']}: {s['title']} · {title}", f"{s['label']} of {title}: " + ", ".join(t.lower() for _, t, _ in links) + ".", math=True)
+    o = head(f"{s['label']}: {s['title']} · {title}", f"{s['label']} of {title}: " + ", ".join(t.lower() for _, t, _ in links) + ".", math=True, extra=extra)
     o += '<div class="page page-lecture">\n' + logo_bar()
     o += f"""
 <header class="lec-hero">
@@ -319,8 +333,13 @@ def build_session(C, s, prev, nxt):
             for l in P.get("links", []):
                 btns.append(f'<a class="file-btn" href="{l["url"]}"><span class="file-kind">WEB</span><span class="file-name">{esc(l["name"])}</span><span class="file-size">page</span></a>')
             o += '  <div class="files">' + "".join(btns) + "</div>\n"
-        if P.get("contents"):
+        if P.get("contents") and notes:
+            o += '  <h3 class="minor">Contents</h3><ol class="outline outline-links">' + "".join(
+                f'<li class="o-l1"><span class="o-num">{n}</span> <a href="#cn-{n.replace(".", "-")}">{t}</a></li>' for n, t in P["contents"]) + "</ol>\n"
+        elif P.get("contents"):
             o += '  <h3 class="minor">Contents</h3><ol class="outline">' + "".join(f'<li class="o-l1"><span class="o-num">{n}</span> {t}</li>' for n, t in P["contents"]) + "</ol>\n"
+        if notes:
+            o += '  <div class="cnotes">' + notes + "</div>\n"
         o += "</section>\n"
     if P.get("quiz"):
         Q = P["quiz"]; n = len(Q)
@@ -378,11 +397,16 @@ def main():
         shutil.rmtree(OUT)
     os.makedirs(os.path.join(OUT, "assets"))
     for name in os.listdir(os.path.join(SRC, "assets")):
-        shutil.copy2(os.path.join(SRC, "assets", name), os.path.join(OUT, "assets", name))
+        src = os.path.join(SRC, "assets", name)
+        if os.path.isdir(src):
+            shutil.copytree(src, os.path.join(OUT, "assets", name))
+        else:
+            shutil.copy2(src, os.path.join(OUT, "assets", name))
     with open(os.path.join(OUT, "assets", "favicon.svg"), "w") as f:
         f.write(FAVICON)
-    if os.path.isdir(os.path.join(SRC, "files")):
-        shutil.copytree(os.path.join(SRC, "files"), os.path.join(OUT, "files"))
+    for sub in ("files", "figures"):
+        if os.path.isdir(os.path.join(SRC, sub)):
+            shutil.copytree(os.path.join(SRC, sub), os.path.join(OUT, sub))
     open(os.path.join(OUT, ".nojekyll"), "w").close()
     with open(os.path.join(OUT, "index.html"), "w", encoding="utf-8") as f:
         f.write(build_index(C))

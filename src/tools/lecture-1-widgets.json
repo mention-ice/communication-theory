@@ -1,0 +1,8 @@
+[
+  {"after": "This is the probability of a wrong \\emph{message}", "widget": "c1-chain"},
+  {"after": "For instance, $L = 0$ means", "widget": "c1-llr"},
+  {"after": "With \\emph{two levels}, the receiver keeps only the sign", "widget": "c1-quantise"},
+  {"after": "\\begin{example}[one reception, three receivers]", "end": "\\end{example}", "widget": "c1-receivers"},
+  {"after": "The minimum distance is the exponent: each extra unit", "widget": "c1-bound"},
+  {"after": "A code corrects about twice as many erasures as errors", "widget": "c1-guarantee"}
+]
