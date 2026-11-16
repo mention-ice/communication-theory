@@ -45,7 +45,7 @@
       "kind": "lecture",
       "label": "Lecture 1",
       "part": "coding",
-      "title": "Channels and optimal decoding",
+      "title": "Channels and maximum-likelihood decoding",
       "date": "",
       "online": true,
       "content": "content/lecture-1.py"
