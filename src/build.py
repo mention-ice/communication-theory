@@ -83,6 +83,10 @@ def kb(path):
     return "%d KB" % max(1, round(os.path.getsize(path) / 1024))
 
 
+# Anonymous visit counter (Bit2Noisy telemetry server, v3): no cookie, nothing stored on the device; see the footer.
+VISITS_JS = "https://bit2noisy-telemetry.sheng-yang-e9e.workers.dev/v.js"
+
+
 def head(title, desc, math=False, extra=""):
     mj = ""
     if math:
@@ -106,6 +110,7 @@ def head(title, desc, math=False, extra=""):
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&amp;family=Space+Mono:ital,wght@0,400;0,700;1,400&amp;family=Bricolage+Grotesque:opsz,wght@12..96,700&amp;display=swap">
 <link rel="stylesheet" href="assets/style.css">
 {mj}<script defer src="assets/site.js"></script>
+<script defer src="{VISITS_JS}" data-site="course"></script>
 {extra}</head>
 <body>
 <canvas id="bitfield" aria-hidden="true"></canvas>
@@ -123,7 +128,7 @@ def logo_bar():
 def footer(C):
     return f"""<footer class="site-footer" data-quiet>
   <div class="wrap footer-grid">
-    <p class="footer-who">{esc(C['title'])} &middot; {C['year']}<br><a href="{C['lecturer_url']}">{esc(C['lecturer'])}</a> &middot; {esc(C['school'])} &middot; <a href="mailto:{C['email']}">{C['email']}</a>{''.join(f' &middot; <a href="{r["url"]}">{esc(r["name"])}</a>' for r in C.get('related', []))}<br>{esc(C['copyright'])}</p>
+    <p class="footer-who">{esc(C['title'])} &middot; {C['year']}<br><a href="{C['lecturer_url']}">{esc(C['lecturer'])}</a> &middot; {esc(C['school'])} &middot; <a href="mailto:{C['email']}">{C['email']}</a>{''.join(f' &middot; <a href="{r["url"]}">{esc(r["name"])}</a>' for r in C.get('related', []))}<br>{esc(C['copyright'])}<br>Visits are counted anonymously: no cookies, nothing kept on your device.</p>
   </div>
 </footer>
 </div>

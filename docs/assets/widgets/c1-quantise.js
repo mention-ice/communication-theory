@@ -1,5 +1,5 @@
 /* Lecture 1, Problem 7 of the page: three levels on the Gaussian channel (Sections 1.3 and 1.4 of the notes).
-   It sits in the exercises, not in the text, because three levels never give a BEC (Sheng, 16 Nov 2026).
+   It sits in the exercises, not in the text of the notes, because three levels never give a BEC.
    The bit is sent as the level (-1)^x sqrt(Es) in Gaussian noise of variance N0/2, so L = 4 sqrt(Es) y / N0
    is Gaussian with mean +-4 Es/N0 and variance 8 Es/N0. The receiver passes on L (general channel), its sign
    (two levels: a BSC(delta)), or its sign and an erasure when |L| <= T (three levels: erased with probability
