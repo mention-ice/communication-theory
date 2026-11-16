@@ -128,7 +128,7 @@ def logo_bar():
 def footer(C):
     return f"""<footer class="site-footer" data-quiet>
   <div class="wrap footer-grid">
-    <p class="footer-who">{esc(C['title'])} &middot; {C['year']}<br><a href="{C['lecturer_url']}">{esc(C['lecturer'])}</a> &middot; {esc(C['school'])} &middot; <a href="mailto:{C['email']}">{C['email']}</a>{''.join(f' &middot; <a href="{r["url"]}">{esc(r["name"])}</a>' for r in C.get('related', []))}<br>{esc(C['copyright'])}<br>Visits are counted anonymously: no cookies, nothing kept on your device.</p>
+    <p class="footer-who">{esc(C['title'])} &middot; {C['year']}<br><a href="{C['lecturer_url']}">{esc(C['lecturer'])}</a> &middot; {esc(C['school'])} &middot; <a href="mailto:{C['email']}">{C['email']}</a>{''.join(f' &middot; <a href="{r["url"]}">{esc(r["name"])}</a>' for r in C.get('related', []))}<br>{esc(C['copyright'])}<br>Visits are counted anonymously, without cookies.</p>
   </div>
 </footer>
 </div>
