@@ -453,6 +453,59 @@
     wait();
   }
 
+  // Solutions shut until the end of the session (build.py, "solutions_after" in course.json):
+  // their text is base64 in data-enc and is put in place once the time has passed.
+  var solutionsForced = false;
+  function openSolutions() {
+    var shut = document.querySelectorAll("details.solution.locked");
+    var waiting = false;
+    for (var i = 0; i < shut.length; i++) {
+      var d = shut[i];
+      if (!solutionsForced && !(Date.now() >= Date.parse(d.getAttribute("data-after")))) { waiting = true; continue; }
+      var body = d.querySelector(".solution-body");
+      var bin = window.atob(body.getAttribute("data-enc"));
+      var bytes = new Uint8Array(bin.length);
+      for (var j = 0; j < bin.length; j++) bytes[j] = bin.charCodeAt(j);
+      body.innerHTML = new TextDecoder().decode(bytes);
+      body.removeAttribute("data-enc");
+      d.classList.remove("locked");
+      var when = d.querySelector(".sol-when");
+      if (when) when.parentNode.removeChild(when);
+      if (window.MathJax && window.MathJax.startup && window.MathJax.startup.promise) {
+        (function (el) {
+          window.MathJax.startup.promise.then(function () { return window.MathJax.typesetPromise([el]); });
+        })(body);
+      }
+    }
+    if (waiting) window.setTimeout(openSolutions, 60000);
+  }
+  document.addEventListener("click", function (ev) {
+    var t = ev.target;
+    if (t && t.closest && t.closest("details.solution.locked > summary")) ev.preventDefault();
+  });
+  window.courseOpenSolutions = function () { solutionsForced = true; openSolutions(); };
+  openSolutions();
+
+  // Home page: a session whose page opens at a set time ("opens_at" in course.json) is listed twice,
+  // as upcoming (data-hide-from) and as online (hidden, data-show-from); swap them at that time.
+  function timedEntries() {
+    var now = Date.now(), waiting = false, i, e;
+    var show = document.querySelectorAll("[data-show-from]");
+    for (i = 0; i < show.length; i++) {
+      e = show[i];
+      if (now >= Date.parse(e.getAttribute("data-show-from"))) { e.hidden = false; e.removeAttribute("data-show-from"); }
+      else waiting = true;
+    }
+    var hide = document.querySelectorAll("[data-hide-from]");
+    for (i = 0; i < hide.length; i++) {
+      e = hide[i];
+      if (now >= Date.parse(e.getAttribute("data-hide-from"))) e.parentNode.removeChild(e);
+      else waiting = true;
+    }
+    if (waiting) window.setTimeout(timedEntries, 20000);
+  }
+  timedEntries();
+
   function init() {
     bitField();
     qamWidget();

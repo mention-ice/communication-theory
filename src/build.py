@@ -19,7 +19,7 @@ The design follows the site of "Elements of Information Theory"
 (https://mention-ice.github.io/information-theory/), in the Mention ICE palette.
 docs/ is generated: do not edit it by hand.
 """
-import hashlib, heapq, html, json, math, os, random, re, shutil, sys
+import base64, datetime, hashlib, heapq, html, json, math, os, random, re, shutil, sys
 from collections import Counter
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -29,6 +29,7 @@ OUT = os.path.join(ROOT, "docs")
 MATHJAX_MACROS = {
     "xv": r"\mathbf{x}", "yv": r"\mathbf{y}", "cv": r"\mathbf{c}", "Lv": r"\mathbf{L}",
     "Ccal": r"\mathcal{C}", "Xcal": r"\mathcal{X}", "Ycal": r"\mathcal{Y}",
+    "FF": r"\mathbb{F}", "T": r"\mathsf{T}",
     "rv": [r"\mathrm{#1}", 1],
     "ind": [r"\boldsymbol{1}_{\{#1\}}", 1],
 }
@@ -145,6 +146,39 @@ def has_page(s):
     return s.get("online") and s.get("content")
 
 
+def opening(s):
+    """A session with "opens_at" (ISO time with offset) still in the future: (iso, "Wednesday 18 November at 9:45").
+    Its page is built but its content stays base64 in the page until that time (see gate()), and the home
+    page lists it as upcoming until then (site.js swaps the two entries). None when the page is open."""
+    at = s.get("opens_at")
+    if not at:
+        return None
+    t = datetime.datetime.fromisoformat(at)
+    if datetime.datetime.now(datetime.timezone.utc) >= t:
+        return None
+    return at, f"{t.strftime('%A')} {t.day} {t.strftime('%B')} at {t.hour}:{t:%M}"
+
+
+GATE_JS = ('<script>(function () {\n'
+           '  var g = document.currentScript.previousElementSibling, t = Date.parse(g.getAttribute("data-open"));\n'
+           '  if (Date.now() >= t) {\n'
+           '    var b = window.atob(g.getAttribute("data-enc")), u = new Uint8Array(b.length);\n'
+           '    for (var i = 0; i < b.length; i++) u[i] = b.charCodeAt(i);\n'
+           '    g.outerHTML = new TextDecoder().decode(u);\n'
+           '  } else {\n'
+           '    window.setInterval(function () { if (Date.now() >= t) window.location.reload(); }, 20000);\n'
+           '  }\n'
+           '})();</script>\n')
+
+
+def gate(inner, at, label):
+    """The content of a page that is not open yet: base64 until the time "at", put in place by the inline
+    script while the page loads (before MathJax, site.js and the widgets run); an open page reloads itself."""
+    enc = base64.b64encode(inner.encode()).decode()
+    return (f'<div class="gate" data-open="{at}" data-enc="{enc}"><p class="gate-msg">This page opens on {label}.</p></div>\n'
+            + GATE_JS)
+
+
 def load_content(s):
     ns = {}
     with open(os.path.join(SRC, s["content"]), encoding="utf-8") as f:
@@ -190,7 +224,17 @@ def build_index(C):
         if has_page(s):
             P = load_content(s)
             lk = " ".join(f'<a href="{s["id"]}.html#{a}">{t}' + (f' <span class="count">{n}</span>' if n else "") + "</a>" for a, t, n in page_links(s, P))
-            items.append(f"""<li class="lec is-online">
+            gated = opening(s)
+            if gated:
+                items.append(f"""<li class="lec is-upcoming" data-hide-from="{gated[0]}">
+  <div class="lec-id"><span class="lec-n">{esc(s['label'])}</span><span class="lec-bin" title="session {i} in binary">{binlabel(i)}</span></div>
+  <div class="lec-main">
+    <h3>{esc(s['title'])}</h3>
+    <p class="lec-head"><span class="part-tag part-{s['part']}">{esc(part)}</span><span class="lec-kind">{kind}</span></p>
+    <p class="lec-date">Online on {gated[1]}</p>
+  </div>
+</li>""")
+            items.append(f"""<li class="lec is-online"{f' hidden data-show-from="{gated[0]}"' if gated else ''}>
   <div class="lec-id"><span class="lec-n">{esc(s['label'])}</span><span class="lec-bin" title="session {i} in binary">{binlabel(i)}</span></div>
   <div class="lec-main">
     <h3><a href="{s['id']}.html">{esc(s['title'])}</a></h3>
@@ -258,7 +302,7 @@ def build_index(C):
 </header>
 <div class="sheet-wrap wrap"><main class="sheet">
   <section class="block" id="sessions" aria-labelledby="sessions-h">
-    <div class="block-head"><h2 id="sessions-h">Sessions</h2><p class="block-sub">19 sessions of 1 h 30, in teaching order. Each page goes online after its session.</p></div>
+    <div class="block-head"><h2 id="sessions-h">Sessions</h2><p class="block-sub">19 sessions of 1 h 30, in teaching order. Each page goes online around its session; the solutions of a TD open after it.</p></div>
     <div class="parts-key">{key}</div>
     <ol class="lectures">
 {chr(10).join(items)}
@@ -268,7 +312,7 @@ def build_index(C):
     <div class="block-head"><h2 id="how-h">How the course works</h2></div>
     <ul class="how">
       <li><h3>Lectures</h3><p>Theory on the blackboard: definitions, proofs, examples. The lecture notes are posted here, lecture by lecture. Take your own notes.</p></li>
-      <li><h3>TD (tutorials)</h3><p>One exam-style problem on paper, then an interactive web page where you compute and the page checks every step. Bring a laptop, a tablet or a phone. Corrections are posted here.</p></li>
+      <li><h3>TD (tutorials)</h3><p>Problems to solve on paper, most of them exercises of the lecture notes: bring the notes. The TD page has the same problems, and their solutions open there after the session.</p></li>
       <li><h3>TP (labs)</h3><p>Python notebooks: you write the decoders and the receiver, on real rooms recorded with a phone. Attendance is mandatory. Solutions are posted here.</p></li>
     </ul>
     <p class="eval"><b>Evaluation.</b> A 2-hour written exam, documents allowed, gives the final score. The four TPs are mandatory: your work is handed in at the end of each session and is evaluated as part of the “compétence”, not in the final score.</p>
@@ -325,11 +369,12 @@ def build_session(C, s, prev, nxt):
 </header>
 <div class="sheet-wrap wrap"><main class="sheet">
 """
+    start = len(o)
     if P.get("summary") or P.get("files"):
         o += '<section class="block" id="notes" aria-labelledby="notes-h">\n'
         o += f'  <div class="block-head"><h2 id="notes-h">{"Lecture notes" if s["kind"] == "lecture" else "Material"}</h2></div>\n'
         if P.get("summary"):
-            o += '  <div class="summary cn-summary"><h3 class="minor">Summary</h3><ul class="tex-list">' + "".join(f"<li>{x}</li>" for x in P["summary"]) + "</ul></div>\n"
+            o += '  <div class="summary cn-summary"><h3 class="minor">' + P.get("summary_title", "Summary") + '</h3><ul class="tex-list">' + "".join(f"<li>{x}</li>" for x in P["summary"]) + "</ul></div>\n"
         if P.get("files"):
             btns = []
             for f in P["files"]:
@@ -378,10 +423,22 @@ def build_session(C, s, prev, nxt):
         o += "  </ol>\n</section>\n"
     if P.get("exercises"):
         E = P["exercises"]
+        # "solutions_after" in course.json (ISO time with offset): until then the solutions are
+        # base64 in the page and site.js keeps their buttons shut; they open by themselves at that time.
+        lock = s.get("solutions_after")
+        locked = False
+        if lock:
+            t_open = datetime.datetime.fromisoformat(lock)
+            locked = datetime.datetime.now(datetime.timezone.utc) < t_open
+            when = f"{t_open.day} {t_open.strftime('%B')} at {t_open:%H:%M}"
         o += f'<section class="block" id="exercises" aria-labelledby="exo-h">\n  <div class="block-head"><h2 id="exo-h">Exercises</h2><p class="block-sub">{len(E)} problems</p></div>\n  <ol class="problems">\n'
         for k, e in enumerate(E, 1):
             sol = ""
-            if e.get("solution"):
+            if e.get("solution") and locked:
+                enc = base64.b64encode(e["solution"].encode()).decode()
+                sol = (f'\n  <details class="solution locked" data-after="{lock}"><summary>Solution <span class="sol-when">opens after the session, on {when}</span></summary>'
+                       f'<div class="solution-body" data-enc="{enc}"></div></details>')
+            elif e.get("solution"):
                 sol = f'\n  <details class="solution"><summary>Solution</summary><div class="solution-body">{e["solution"]}</div></details>'
             o += f"""<li class="problem" id="p{k}">
   <h3 class="p-head"><span class="p-num">Problem {k}</span> <span class="p-title">{e['title']}</span></h3>
@@ -389,6 +446,9 @@ def build_session(C, s, prev, nxt):
 </li>
 """
         o += "  </ol>\n</section>\n"
+    gated = opening(s)
+    if gated:
+        o = o[:start] + gate(o[start:], *gated)
     pv = f'<a href="{prev["id"]}.html"><span class="dir">&larr; {esc(prev["label"])}</span><span class="ttl">{esc(prev["title"])}</span></a>' if prev else "<span></span>"
     nx = f'<a class="next" href="{nxt["id"]}.html"><span class="dir">{esc(nxt["label"])} &rarr;</span><span class="ttl">{esc(nxt["title"])}</span></a>' if nxt else ""
     if prev or nxt:

@@ -1,0 +1,67 @@
+/* Lecture 2, Section 2.8: message passing on the (7,4) Hamming code (c2-mp.js) */
+.mp [hidden] { display: none !important; }
+.mp-fig svg { max-width: 760px; }
+.mp-fig svg text { font-family: var(--mono); }
+.mp-where { color: var(--ink-3); }
+.mp-lead { margin: 0 0 0.8rem; }
+.mp-stub { fill: none; stroke: var(--rule-strong); stroke-width: 1.2; }
+.mp-edge { fill: none; stroke: var(--ink-3); stroke-opacity: 0.45; stroke-linecap: round; transition: stroke-width 0.25s; }
+.mp-edge.is-ok { stroke: var(--ok); stroke-opacity: 0.85; }
+.mp-edge.is-bad { stroke: var(--bad); stroke-opacity: 0.85; }
+.mp-edge.is-zero { stroke: var(--ink-3); stroke-opacity: 0.7; stroke-dasharray: 1 5; }
+.mp-chip rect { fill: var(--sheet); stroke: var(--rule-strong); stroke-width: 1; }
+.mp-chip .k { font-size: 9.5px; fill: var(--ink-2); }
+.mp-chip .v { font-size: 11px; font-weight: 700; fill: var(--ink-3); }
+.mp-chip.is-ok rect { stroke: var(--ok); fill: var(--ok-soft); }
+.mp-chip.is-ok .v { fill: var(--ok); }
+.mp-chip.is-bad rect { stroke: var(--bad); fill: var(--bad-soft); }
+.mp-chip.is-bad .v { fill: var(--bad); }
+.mp-chip.is-zero rect { stroke-dasharray: 2 2; }
+.mp-row { transition: opacity 0.3s; }
+.mp-row.is-dim { opacity: 0.5; }
+.mp-node { cursor: pointer; outline: none; }
+.mp-node .mp-shape { fill: var(--sheet); stroke: var(--ink-3); stroke-width: 1.5; transition: fill 0.25s, stroke 0.25s; }
+.mp-node:hover .mp-shape { stroke: var(--signal); }
+.mp-check.is-bad .mp-shape { fill: var(--noise-soft); stroke: var(--noise); stroke-width: 2.2; }
+.mp-bit.is-ok .mp-shape { fill: var(--ok-soft); stroke: var(--ok); stroke-width: 2; }
+.mp-bit.is-bad .mp-shape { fill: var(--bad-soft); stroke: var(--bad); stroke-width: 2; }
+.mp-bit.is-erased .mp-shape { fill: var(--band); stroke-dasharray: 4 3; }
+.mp-node.is-sel .mp-shape, .mp-node:focus-visible .mp-shape { stroke: var(--signal); stroke-width: 3.2; stroke-dasharray: none; }
+.mp-node .cn, .mp-node .d { font-size: 15px; font-weight: 700; fill: var(--ink); pointer-events: none; }
+.mp-bit.is-ok .d { fill: var(--ok); }
+.mp-bit.is-bad .d { fill: var(--bad); }
+.mp-bit.is-erased .d { fill: var(--ink-3); }
+.mp-x { font-size: 13px; font-weight: 700; fill: var(--bad); visibility: hidden; pointer-events: none; }
+.mp-bit.is-bad .mp-x { visibility: visible; }
+.mp-name { font-family: var(--serif) !important; font-style: italic; font-size: 15px; fill: var(--ink-2); }
+.mp-name tspan + tspan { font-style: normal; }
+.mp-val { font-size: 11.5px; fill: var(--ink-2); }
+.mp-tot { font-size: 12.5px; font-weight: 700; fill: var(--ink); }
+.mp-tot.is-ok { fill: var(--ok); }
+.mp-tot.is-bad { fill: var(--bad); }
+.mp-tot.is-zero { fill: var(--ink-3); }
+.mp-cap { font-size: 10px; fill: var(--ink-3); }
+.mp-dot { stroke: var(--sheet); stroke-width: 1.5; }
+.mp-dot.is-ok { fill: var(--ok); }
+.mp-dot.is-bad { fill: var(--bad); }
+.mp-dot.is-zero { fill: var(--ink-3); }
+.mp.is-narrow .mp-node .cn, .mp.is-narrow .mp-node .d { font-size: 27px; }
+.mp.is-narrow .mp-x { font-size: 22px; }
+.mp.is-narrow .mp-name { font-size: 26px; }
+.mp.is-narrow .mp-val { font-size: 23px; }
+.mp.is-narrow .mp-tot { font-size: 25px; }
+.mp.is-narrow .mp-node .mp-shape { stroke-width: 2.4; }
+.mp.is-narrow .mp-node.is-sel .mp-shape, .mp.is-narrow .mp-node:focus-visible .mp-shape { stroke-width: 4.5; }
+.mp-detail { margin-top: 0.3rem; }
+.mp-llr { margin: 0.5rem 0 0.1rem; flex-wrap: wrap; }
+.mp-table { min-width: 0; }
+.mp-table caption { caption-side: top; text-align: left; font-family: var(--serif); font-size: 0.92rem; color: var(--ink-2); padding: 0 0 0.35rem 0.5rem; }
+.mp-table td:first-child { text-align: left; font-family: var(--serif); }
+.mp-table td.is-ok { color: var(--ok); font-weight: 700; }
+.mp-table td.is-bad { color: var(--bad); font-weight: 700; }
+.mp-table td.is-zero { color: var(--ink-3); }
+.mp-table tr.mp-sum td { border-top: 1px solid var(--rule-strong); font-weight: 700; }
+.mp-table tfoot td { text-align: left; }
+@media (prefers-reduced-motion: reduce) {
+  .mp-edge, .mp-row, .mp-node .mp-shape { transition: none; }
+}

@@ -602,6 +602,12 @@ details.solution > summary {
 details.solution > summary::-webkit-details-marker { display: none; }
 details.solution > summary::before { content: "\25B8  "; }
 details.solution[open] > summary::before { content: "\25BE  "; }
+details.solution.locked > summary { cursor: default; color: var(--ink-2); }
+[hidden] { display: none !important; }
+.gate { padding: 3rem 1rem; text-align: center; }
+.gate-msg { font: 700 0.9rem/1.5 var(--mono); letter-spacing: 0.02em; color: var(--ink-2); }
+details.solution.locked > summary::before { content: "\25AB  "; }
+.sol-when { font-weight: 400; text-transform: none; letter-spacing: 0; margin-left: 0.4em; }
 .solution-body { padding: 0 1rem 1rem; border-top: 1px dashed var(--rule-strong); padding-top: 0.9rem; }
 
 /* ---------------------------------------------------------------- converted LaTeX */

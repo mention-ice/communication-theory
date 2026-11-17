@@ -55,14 +55,21 @@
       "kind": "lecture",
       "label": "Lecture 2",
       "part": "coding",
-      "title": "Linear block codes, Hamming codes"
+      "title": "Linear block codes and their decoding",
+      "online": true,
+      "content": "content/lecture-2.py",
+      "opens_at": "2026-11-18T09:45:00+01:00"
     },
     {
       "id": "td-1",
       "kind": "td",
       "label": "TD1",
       "part": "coding",
-      "title": "Decoding by hand: block codes and the Hamming bound"
+      "title": "Decoding by hand: block codes and the Hamming bound",
+      "online": true,
+      "content": "content/td-1.py",
+      "opens_at": "2026-11-18T09:45:00+01:00",
+      "solutions_after": "2026-11-18T12:00:00+01:00"
     },
     {
       "id": "lecture-3",

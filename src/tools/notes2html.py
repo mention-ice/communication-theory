@@ -272,7 +272,10 @@ class Converter:
             elif env in ("itemize", "enumerate"):
                 items = [x for x in re.split(r"\\item\b", body)[1:]]
                 tag = "ul" if env == "itemize" else "ol"
-                out.append('<%s class="tex-list">%s</%s>' % (tag, "".join("<li>%s</li>" % self.inline(x) for x in items), tag))
+                cls = "tex-list" if env == "itemize" else "tex-list enum-decimal enum-dot"
+                # display math inside an item stays in the item, as its own block
+                items = [re.sub(r"\n?@@D(@@M\d+@@)\n?", r" \1 ", x) for x in items]
+                out.append('<%s class="%s">%s</%s>' % (tag, cls, "".join("<li>%s</li>" % self.inline(x) for x in items), tag))
             else:
                 sys.exit("unknown environment " + env)
         return "\n".join(x for x in out if x)
